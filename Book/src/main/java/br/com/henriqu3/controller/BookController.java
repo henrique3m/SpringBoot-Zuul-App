@@ -6,6 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -16,16 +17,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.henriqu3.model.Book;
 import br.com.henriqu3.model.Review;
+import io.swagger.annotations.Api;
 
+@Api(value = "books")
 @Controller
 @ExposesResourceFor(Book.class)
 public class BookController {
 	
+	@Autowired
 	private final BookRepository repository;
 		
 	public BookController(BookRepository repository) {
@@ -37,7 +40,7 @@ public class BookController {
         resource.add(linkTo(methodOn(BookController.class).getBook(book.getBookId())).withSelfRel());
 		return resource;
 	}
-	
+		
 	@GetMapping(path = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
 	HttpEntity<List<Resource<Book>>> getBooks() {
 			
@@ -57,19 +60,19 @@ public class BookController {
 		return new ResponseEntity<>(getBookResource(this.repository.getById(id)), HttpStatus.OK);
 	}
 	
-    @RequestMapping("/books/isbn")
+	@GetMapping("/books/isbn")
     public HttpEntity<Resource<Book>> GetByIsbn(
             @RequestParam(value = "isbn", required = true, defaultValue = "") String isbn) {
         return new ResponseEntity<>(getBookResource(this.repository.getByISBN(isbn)), HttpStatus.OK);
     }
     
-    @RequestMapping("/books/title")
+	@GetMapping("/books/title")
     public HttpEntity<Resource<Book>> GetByTitle(
             @RequestParam(value = "title", required = true, defaultValue = "") String title) {
         return new ResponseEntity<>(getBookResource(this.repository.getByTitle(title)), HttpStatus.OK);
     }
     
-    @RequestMapping("/books/reviews")
+	@GetMapping("/books/reviews")
     public HttpEntity<Resources<Review>> GetByReviews(
             @RequestParam(value = "isbn", required = true, defaultValue = "") String isbn) {
     	List<Review> reviews = this.repository.getReviews(isbn);
@@ -80,7 +83,7 @@ public class BookController {
 		return new ResponseEntity<>(resources, HttpStatus.OK);
     }
     
-    @RequestMapping("/books/author")
+	@GetMapping("/books/author")
 	HttpEntity<List<Resource<Book>>> getByAuthor(
 	@RequestParam(value = "author", required = true, defaultValue = "") String author) {
 			
@@ -95,7 +98,7 @@ public class BookController {
 		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
     
-    @RequestMapping("/books/keyword")
+	@GetMapping("/books/keyword")
 	HttpEntity<List<Resource<Book>>> getByKeyWord(
 	@RequestParam(value = "word", required = true, defaultValue = "") String word) {
 			
