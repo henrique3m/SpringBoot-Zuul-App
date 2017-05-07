@@ -1,2 +1,2 @@
-# SpringBoot-Zuul-App
+# Spring-boot-app
 Spring boot and Netflix Zuul application
